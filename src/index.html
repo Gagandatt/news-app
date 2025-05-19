@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NewsFlash</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container">
+      <div class="brand">NewsFlash</div>
+      <div class="nav-links">
+        <a class="nav-link active" href="#" data-category="general">General</a>
+        <a class="nav-link" href="#" data-category="business">Business</a>
+        <a class="nav-link" href="#" data-category="technology">Technology</a>
+        <a class="nav-link" href="#" data-category="sports">Sports</a>
+        <a class="nav-link" href="#" data-category="entertainment">Entertainment</a>
+        <select id="country-select">
+          <option value="us">United States</option>
+          <option value="gb">United Kingdom</option>
+          <option value="ca">Canada</option>
+          <option value="au">Australia</option>
+          <option value="in">India</option>
+          <option value="de">Germany</option>
+          <option value="fr">France</option>
+          <option value="jp">Japan</option>
+          <option value="br">Brazil</option>
+        </select>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="loading" class="loading hidden">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="error" class="error hidden"></div>
+
+    <div id="news-container" class="news-grid"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
