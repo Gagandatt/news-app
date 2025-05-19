@@ -1,7 +1,7 @@
-// Get your free API key from https://mediastack.com/
+// Get your free API key from https://newsapi.org/
 // Sign up for a free account and replace this with your API key
-const API_KEY = '5e998ede4e8071b626f63af701f6f16c';
-const BASE_URL = 'http://api.mediastack.com/v1';
+const API_KEY = '5e998ede4e8071b626f63af701f6f16c'; // Replace with your NewsAPI key
+const BASE_URL = 'https://newsapi.org/v2';
 
 // State management
 const state = {
@@ -61,7 +61,7 @@ const hideError = () => {
 const displayNews = (articles) => {
   elements.newsContainer.innerHTML = articles.map(article => `
     <div class="card">
-      <img src="${article.image}" 
+      <img src="${article.urlToImage}" 
            class="card-img" 
            alt="${article.title}"
            onerror="this.style.display='none'">
@@ -70,7 +70,7 @@ const displayNews = (articles) => {
         <p class="card-text">${article.description || 'No description available'}</p>
       </div>
       <div class="card-footer">
-        <small class="time-ago">${timeAgo(article.published_at)}</small>
+        <small class="time-ago">${timeAgo(article.publishedAt)}</small>
         <a href="${article.url}" class="read-more" target="_blank">Read More</a>
       </div>
     </div>
@@ -84,22 +84,39 @@ const loadNews = async () => {
     showLoading();
     elements.newsContainer.innerHTML = '';
 
-    const url = `${BASE_URL}/news?access_key=${API_KEY}&countries=${state.currentCountry}&categories=${state.currentCategory}&limit=20`;
+    const url = `${BASE_URL}/top-headlines?country=${state.currentCountry}&category=${state.currentCategory}&apiKey=${API_KEY}`;
 
-    const response = await fetch(url);
-    const data = await response.json();
+    console.log('Fetching news from:', url);
 
-    if (data.error) {
-      throw new Error(data.error.message || 'Failed to load news');
+    const response = await fetch(url, {
+      method: 'GET',
+      mode: 'cors',
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    console.log('Response status:', response.status);
+    console.log('Response headers:', response.headers);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    if (!data.data || data.data.length === 0) {
+    const data = await response.json();
+    console.log('API Response:', data);
+
+    if (data.status !== 'ok') {
+      throw new Error(data.message || 'Failed to load news');
+    }
+
+    if (!data.articles || data.articles.length === 0) {
       throw new Error('No articles found for this country. Please try another country.');
     }
 
-    displayNews(data.data);
+    displayNews(data.articles);
   } catch (error) {
-    console.error('Error loading news:', error);
+    console.error('Detailed error:', error);
     showError(error.message || 'Failed to load news. Please try again later.');
   } finally {
     hideLoading();
@@ -152,4 +169,4 @@ const init = () => {
 };
 
 // Start the app when the page loads
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', init); 
